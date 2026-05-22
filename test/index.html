@@ -1,0 +1,32 @@
+<!DOCTYPE html><html lang="zh"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>连接测试</title></head> <body style="font-family:sans-serif;padding:20px;max-width:480px;margin:0 auto;"> <h2>Supabase 连接测试</h2> <pre id="log" style="background:#1a1a2e;color:#0f0;padding:16px;border-radius:8px;font-size:13px;overflow:auto;max-height:80vh;"></pre> <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const log = document.getElementById('log');
+    function add(msg) { log.textContent += msg + '\n'; }
+
+    const URL = 'https://evjcdkzgqaxzbuhdukpu.supabase.co';
+    const KEY = 'sb_publishable_ZTrdN-nmmWJpXjG1Ht9h8A_whXrbtRl';
+
+    add('URL: ' + URL);
+    add('KEY: ' + KEY.slice(0,25) + '...');
+    add('');
+
+    try {
+      const client = createClient(URL, KEY);
+      add('✓ 客户端创建成功');
+
+      add('正在查询 members...');
+      const { data, error } = await client.from('members').select('name');
+
+      if (error) {
+        add('✗ 查询失败: ' + error.message);
+        add('  完整错误: ' + JSON.stringify(error));
+      } else {
+        add('✓ 查询成功!');
+        add('  返回 ' + data.length + ' 条数据');
+        data.slice(0,6).forEach(m => add('  - ' + m.name));
+      }
+    } catch(e) {
+      add('✗ 异常: ' + e.message);
+    }
+  </script> </body> </html>
